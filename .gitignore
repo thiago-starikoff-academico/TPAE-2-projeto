@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Credenciais e variáveis de ambiente
+.env
+*.env
+*.key
+
+# Arquivos temporários
+*.tmp
+*.log
