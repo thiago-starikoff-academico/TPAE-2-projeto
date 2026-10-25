@@ -1,1 +1,5 @@
-
+SELECT
+    dados.sigla_uf as sigla_uf,
+    dados.grupo_idade as grupo_idade,
+    dados.populacao as populacao
+FROM `basedosdados.br_ibge_censo_2022.populacao_grupo_idade_uf` AS dados
