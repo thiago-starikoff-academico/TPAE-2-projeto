@@ -1,68 +1,64 @@
-# Dicionário Preliminar de Dados
+# Dicionário de Dados — TPAE II
 
-Este documento apresenta as principais variáveis utilizadas no projeto TPAE-2, com suas descrições, tipos, unidades de medida e fontes.
+Este documento apresenta as variáveis da base municipal tratada na Entrega 5, suas descrições, tipos, unidades de medida e fontes.
 
-## Base municipal de população, área e densidade demográfica
+## Base final — Municípios da Paraíba
 
-| Variável | Descrição | Tipo | Unidade | Fonte / Cobertura |
+Arquivo: `base_municipal_pb_tratada.csv`
+
+Unidade de análise: município.
+
+Cobertura: 223 municípios da Paraíba.
+
+Ano de referência dos dados: 2022.
+
+| Variável | Descrição | Tipo | Unidade | Fonte |
 |---|---|---|---|---|
-| `codigo_ibge` | Código oficial utilizado para identificar cada município | Inteiro | Código identificador | IBGE / 223 municípios da Paraíba |
-| `municipio` | Nome do município | Texto | Não se aplica | IBGE / 223 municípios da Paraíba |
-| `populacao` | População residente no município | Inteiro | Habitantes | Censo Demográfico 2022 – IBGE / Paraíba |
-| `area_km2` | Área territorial do município | Numérico | km² | IBGE / 223 municípios da Paraíba |
-| `densidade_demografica` | Relação entre a população residente e a área territorial do município | Numérico | habitantes por km² | Censo Demográfico 2022 – IBGE / Paraíba |
+| `codigo_ibge` | Código de identificação do município | Inteiro | Código identificador | IBGE — Censo 2022 |
+| `municipio` | Nome do município | Texto | Não se aplica | IBGE — Censo 2022 |
+| `populacao_rural` | População residente em setores classificados como rurais | Inteiro | Habitantes | IBGE — Agregados por Setores Censitários |
+| `populacao_urbana` | População residente em setores classificados como urbanos | Inteiro | Habitantes | IBGE — Agregados por Setores Censitários |
+| `populacao_total` | Soma das populações rural e urbana | Inteiro | Habitantes | Calculada a partir dos setores censitários |
+| `percentual_rural` | Participação da população rural na população total | Numérico | % | Calculada a partir dos setores censitários |
+| `taxa_alfabetizacao` | Percentual de pessoas alfabetizadas com 15 anos ou mais | Numérico | % | IBGE — Tabela 9543 |
+| `renda_per_capita` | Rendimento nominal mensal domiciliar per capita médio | Numérico | R$ por pessoa/mês | IBGE — Tabela 10295 |
 
-## Base municipal de população urbana e rural
+## Variáveis originais utilizadas no tratamento
 
-| Variável | Descrição | Tipo | Unidade | Fonte / Cobertura |
-|---|---|---|---|---|
-| `codigo_ibge` | Código oficial utilizado para identificar cada município | Inteiro | Código identificador | IBGE / 223 municípios da Paraíba |
-| `municipio` | Nome do município | Texto | Não se aplica | IBGE / 223 municípios da Paraíba |
-| `populacao_rural` | População residente em setores censitários classificados como rurais | Inteiro | Habitantes | Agregados por Setores Censitários – Censo 2022 / Paraíba |
-| `populacao_urbana` | População residente em setores censitários classificados como urbanos | Inteiro | Habitantes | Agregados por Setores Censitários – Censo 2022 / Paraíba |
-| `populacao_total` | Soma das populações rural e urbana do município | Inteiro | Habitantes | Calculada a partir dos dados do Censo 2022 / Paraíba |
-| `percentual_rural` | Percentual da população total do município residente em áreas rurais | Numérico | % | Calculada a partir dos dados do Censo 2022 / Paraíba |
+| Variável | Descrição | Utilização |
+|---|---|---|
+| `CD_UF` | Código da Unidade da Federação | Filtrar os registros da Paraíba |
+| `CD_MUN` | Código do município | Agrupar os setores por município |
+| `NM_MUN` | Nome do município | Identificar os municípios |
+| `SITUACAO` | Classificação urbana ou rural do setor | Separar as populações urbana e rural |
+| `v0001` | População residente | Calcular os totais populacionais |
 
-## Variáveis originais utilizadas no tratamento dos setores censitários
+## Tratamento e integração
 
-| Variável | Descrição no projeto | Tipo | Unidade | Utilização |
-|---|---|---|---|---|
-| `CD_UF` | Código da Unidade da Federação | Inteiro | Código identificador | Utilizado para selecionar os registros da Paraíba |
-| `CD_MUN` | Código do município | Inteiro | Código identificador | Utilizado para identificar e agrupar os municípios |
-| `NM_MUN` | Nome do município | Texto | Não se aplica | Utilizado para identificação dos municípios |
-| `SITUACAO` | Classificação da situação do setor censitário | Texto | Urbana/Rural | Utilizada para separar a população urbana da rural |
-| `v0001` | População residente considerada na agregação utilizada pelo projeto | Inteiro | Habitantes | Utilizada para calcular a população urbana e rural por município |
+Foram considerados os setores censitários da Paraíba classificados como urbanos ou rurais.
 
-## Unidade de análise
+Os registros sem classificação em `SITUACAO` foram excluídos da agregação. Os cinco registros excluídos apresentavam população igual a zero.
 
-A principal unidade de análise é o **município**.
+A população foi agregada por município e situação do setor censitário.
 
-O conjunto de dados final possui informações referentes aos **223 municípios do estado da Paraíba**.
+As informações de alfabetização e renda foram integradas à base municipal utilizando o nome padronizado do município como chave de junção, com validação da correspondência entre os registros.
 
-## Chave de junção
-
-A principal chave prevista para integração das bases é:
-
-`codigo_ibge`
-
-Nos dados originais dos setores censitários, essa informação aparece como `CD_MUN`.
-
-O código permite relacionar informações provenientes de diferentes bases sem depender apenas do nome textual do município.
+O código IBGE foi preservado como identificador na base final.
 
 ## Variáveis derivadas
 
-Algumas variáveis foram calculadas durante o tratamento dos dados.
-
-### População total
-
-A população total é calculada pela soma:
+**População total**
 
 `populacao_total = populacao_rural + populacao_urbana`
 
-### Percentual rural
-
-O percentual da população rural é calculado por:
+**Percentual rural**
 
 `percentual_rural = (populacao_rural / populacao_total) * 100`
 
-O resultado foi arredondado para duas casas decimais.
+O percentual foi arredondado para duas casas decimais.
+
+## Validação e limitações
+
+A base final possui 223 registros e 8 variáveis, sem valores ausentes ou municípios duplicados.
+
+A soma populacional dos setores censitários é de 3.974.687 habitantes, enquanto a população da
