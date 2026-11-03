@@ -2,163 +2,129 @@
 
 # 📊 Infraestrutura da Informação na Paraíba
 
-> 🎓 **Curso:** Técnicas de Pesquisa e Análise Econômica II (PSAE00320)  
-> 🏫 **Turma:** 012026.2  
-> 👨‍🏫 **Professor:** Aléssio Almeida
+**Curso:** Técnicas de Pesquisa e Análise Econômica II (PSAE00320)  
+**Turma:** 012026.2  
+**Professor:** Aléssio Almeida
 
 ---
 
-## 🎯 1. Sobre o Projeto e Problema de Pesquisa
+## 1. Sobre o projeto
 
 O projeto busca construir uma base de dados que ajude a identificar quais regiões da Paraíba apresentam maior carência de acesso à informação.
 
-A proposta está relacionada ao programa **Paraíba Sem Dívidas**, do CORECON-PB, que busca ampliar o conhecimento da população sobre educação financeira. A partir da análise de diferentes indicadores, o projeto pretende contribuir para a identificação das regiões que podem apresentar maior necessidade de ações e recursos voltados à educação financeira.
+A proposta está relacionada ao programa **Paraíba Sem Dívidas**, do CORECON-PB, que busca ampliar o conhecimento da população sobre educação financeira.
 
-**Pergunta de pesquisa:**  
-Como o acesso à informação afeta o conhecimento familiar em educação financeira na Paraíba?
+**Pergunta de pesquisa:** Como o acesso à informação afeta o conhecimento familiar em educação financeira na Paraíba?
 
-**Objetivo principal:**  
-Mapear e quantificar a relação entre acesso à informação e educação financeira, buscando identificar regiões da Paraíba com maior necessidade de atenção.
+**Objetivo:** Mapear a relação entre acesso à informação e educação financeira, identificando regiões que podem necessitar de maior atenção.
 
----
+A Entrega 5 concentra-se na obtenção, limpeza e tratamento dos dados municipais, preparando a base para análises posteriores.
 
-## 👥 2. Equipe de Desenvolvimento
+## 2. Equipe
 
-- **Thiago Ramirez Balotta Starikoff**
-- **João Marcos Nery da Silva**
-- **Cauã Antero do Nascimento**
+- Thiago Ramirez Balotta Starikoff
+- João Marcos Nery da Silva
+- Cauã Antero do Nascimento
 
----
+## 3. Fontes de dados
 
-## 🗃️ 3. Fontes de Dados
+Foram utilizadas quatro bases do IBGE, com dados referentes ao Censo Demográfico de 2022:
 
-### Fontes já utilizadas
+| Fonte | Informação utilizada |
+|---|---|
+| Agregados por Setores Censitários | População urbana e rural |
+| Tabela 4714 | População municipal oficial para conferência |
+| Tabela 9543 | Taxa de alfabetização da população de 15 anos ou mais |
+| Tabela 10295 | Rendimento nominal mensal domiciliar per capita médio |
 
-**IBGE – Censo Demográfico 2022**
+Os dados foram selecionados para os 223 municípios do estado da Paraíba.
 
-Foram utilizados dados de população residente, área territorial e densidade demográfica dos **223 municípios da Paraíba**.
+As informações sobre as fontes estão documentadas em `docs/inventario_fontes.md`.
 
-**IBGE – Agregados por Setores Censitários**
+## 4. Estrutura do repositório
 
-A base foi utilizada para identificar a distribuição da população entre áreas urbanas e rurais. Os dados nacionais foram filtrados para a Paraíba e posteriormente agregados por município.
+- `data/raw/` — arquivos originais utilizados no processamento.
+- `data/processed/` — pasta destinada aos dados tratados.
+- `notebooks/` — notebooks do projeto.
+- `docs/` — documentação e dicionário de dados.
+- `outputs/` — pasta destinada aos produtos gerados.
 
-**Cadastro de municípios brasileiros**
+Os arquivos finais da Entrega 5 também estão disponíveis na raiz do repositório.
 
-Base auxiliar utilizada para identificação dos municípios por meio dos códigos oficiais do IBGE.
+## 5. Obtenção, limpeza e tratamento
 
-### Fontes previstas para etapas posteriores
+O processamento foi desenvolvido em Python, utilizando principalmente a biblioteca pandas.
 
-- **PNAD Contínua – IBGE:** indicadores relacionados às características socioeconômicas e ao acesso à informação.
-- **Dados de Telecomunicações – Anatel:** indicadores de acesso aos serviços de telecomunicações nos municípios da Paraíba.
+As etapas realizadas foram:
 
-O detalhamento das fontes, cobertura, formato e forma de aquisição está disponível em:
+1. Leitura dos arquivos originais do IBGE.
+2. Seleção dos setores censitários da Paraíba.
+3. Identificação de valores ausentes e duplicidades.
+4. Exclusão de cinco setores sem classificação urbana ou rural, todos com população igual a zero.
+5. Agregação da população urbana e rural por município.
+6. Cálculo da população total e do percentual rural.
+7. Tratamento dos dados de alfabetização e renda.
+8. Integração das bases municipais.
+9. Validação e exportação da base final.
 
-`docs/inventario_fontes.md`
+## 6. Base final tratada
 
----
+**Arquivo:** `base_municipal_pb_tratada.csv`
 
-## 📁 4. Estrutura do Repositório
+A base final contém **223 municípios e 8 variáveis**:
 
-```text
-.
-├── README.md
-├── .gitignore
-│
-├── data/
-│   ├── raw/                 # Dados originais permitidos
-│   └── processed/           # Dados tratados e consolidados
-│
-├── notebooks/               # Aquisição, tratamento e análise dos dados
-│
-├── docs/
-│   ├── inventario_fontes.md
-│   ├── dicionario_dados.md
-│   └── plano_aquisicao.md
-│
-└── outputs/                 # Tabelas, gráficos e produtos gerados
-```
+| Variável | Descrição |
+|---|---|
+| `codigo_ibge` | Código de identificação do município |
+| `municipio` | Nome do município |
+| `populacao_rural` | População residente em áreas rurais |
+| `populacao_urbana` | População residente em áreas urbanas |
+| `populacao_total` | Soma das populações rural e urbana |
+| `percentual_rural` | Percentual da população residente em áreas rurais |
+| `taxa_alfabetizacao` | Taxa de alfabetização da população de 15 anos ou mais |
+| `renda_per_capita` | Rendimento nominal mensal domiciliar per capita médio |
 
----
+## 7. Validação dos dados
 
-## 📓 5. Aquisição e Tratamento dos Dados
+As verificações realizadas identificaram:
 
-Os procedimentos de aquisição e tratamento são desenvolvidos em Python, utilizando principalmente a biblioteca **pandas**.
+- 223 municípios na base final.
+- Nenhum valor ausente nas oito variáveis.
+- Nenhum código municipal duplicado.
+- Nenhuma população negativa.
+- Nenhuma inconsistência na soma das populações urbana e rural.
+- Nenhum percentual rural ou taxa de alfabetização fora do intervalo de 0% a 100%.
+- Nenhuma renda per capita negativa.
 
-O notebook utilizado nesta etapa é:
+A população agregada dos setores censitários totalizou **3.974.687 habitantes**, enquanto a Tabela 4714 do IBGE apresentou **3.974.495 habitantes**.
 
-`notebooks/01_aquisicao_dados_ibge.ipynb`
+A diferença de 192 habitantes, localizada em Alhandra e Jacaraú, foi mantida como limitação documentada.
 
-Entre os procedimentos realizados estão:
+## 8. Integração das bases
 
-1. carregamento das bases;
-2. seleção dos dados referentes à Paraíba;
-3. identificação dos municípios pelo código IBGE;
-4. tratamento e organização das variáveis;
-5. agregação dos setores censitários por município;
-6. separação da população urbana e rural;
-7. criação de variáveis derivadas;
-8. validação dos resultados;
-9. exportação das bases processadas.
+A unidade de análise é o município.
 
----
+O código IBGE foi preservado como identificador da base final. As informações de alfabetização e renda foram integradas utilizando os nomes padronizados dos municípios, com validação das correspondências.
 
-## 📊 6. Dados Processados
+## 9. Arquivos da Entrega 5
 
-Entre os arquivos produzidos nesta etapa está:
+- `TPAE_II_Entrega_5_notebook_limpo.ipynb` — notebook de processamento.
+- `base_municipal_pb_tratada.csv` — base municipal tratada.
+- `E05_equipe06_qualidade_dados_revisado (1).pdf` — relatório de qualidade.
+- `docs/dicionario_dados.md` — dicionário das variáveis.
 
-`data/processed/populacao_urbana_rural_municipios_pb_2022.csv`
+## 10. Reprodução
 
-A base contém os **223 municípios da Paraíba** e as seguintes variáveis:
+Para reproduzir o processamento:
 
-- `codigo_ibge`
-- `municipio`
-- `populacao_rural`
-- `populacao_urbana`
-- `populacao_total`
-- `percentual_rural`
+1. Abrir o notebook da Entrega 5 no Google Colab.
+2. Executar todas as células em sequência.
+3. O notebook obtém os arquivos originais disponibilizados no repositório.
+4. São realizados os tratamentos, as integrações e as validações.
+5. A base final é exportada em CSV.
 
-A validação realizada nesta etapa não identificou valores ausentes nessas variáveis.
+## 11. Segurança
 
----
+O projeto utiliza dados públicos do IBGE.
 
-## 🔗 7. Unidade de Análise e Integração
-
-A principal unidade de análise do projeto é o **município**.
-
-A principal chave utilizada para identificar e integrar informações entre diferentes bases é o:
-
-`codigo_ibge`
-
-Essa padronização permitirá a integração futura dos indicadores provenientes das diferentes fontes utilizadas no projeto.
-
----
-
-## 📑 8. Documentação
-
-A documentação da Entrega 04 está organizada na pasta `docs/`:
-
-- `inventario_fontes.md` — origem, cobertura e características das fontes utilizadas;
-- `dicionario_dados.md` — descrição das principais variáveis;
-- `plano_aquisicao.md` — procedimentos de obtenção, tratamento e atualização dos dados.
-
----
-
-## ▶️ 9. Reprodução
-
-Para reproduzir as etapas já desenvolvidas:
-
-1. obter os dados nas fontes indicadas no inventário;
-2. executar o notebook de aquisição disponível em `notebooks/`;
-3. aplicar os filtros indicados para o estado da Paraíba;
-4. executar as etapas de tratamento e validação;
-5. gerar os arquivos tratados em `data/processed/`.
-
-Arquivos grandes ou que não possam ser redistribuídos diretamente pelo repositório devem ser obtidos a partir das fontes originais indicadas na documentação.
-
----
-
-## 🔒 10. Segurança
-
-O projeto utiliza dados públicos.
-
-Senhas, tokens, chaves de acesso, dados pessoais, documentos internos ou bases restritas não devem ser adicionados ao repositório. O arquivo `.gitignore` é utilizado para evitar o versionamento de arquivos que não devem ser publicados.
+Senhas, tokens, chaves de acesso e informações restritas não devem ser adicionados ao repositório.
